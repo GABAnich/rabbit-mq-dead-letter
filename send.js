@@ -14,7 +14,7 @@ amqp.connect('amqp://localhost')
         });
 
         Array.from({ length: 10 }, (_, i) => {
-          const msg = `abc${i}`;
+          const msg = JSON.stringify({ msg: `abc${i}`, retries_count: 0 });
           console.log('[x] sent "%s"', msg);
           channel.sendToQueue('main', Buffer.from(msg));
         });

@@ -32,6 +32,13 @@ amqp.connect('amqp://localhost')
 
         channel.consume(deadQueue, (msg) => {
           console.log(deadQueue, msg.content.toString());
+          const obj = JSON.parse(msg.content.toString());
+          const new_obj = { ...obj, retries_count: obj.retries_count + 1};
+          console.log(obj, new_obj);
+          const new_msg = JSON.stringify(new_obj);
+          if (new_obj.retries_count < 5) {
+            channel.sendToQueue(queue, Buffer.from(new_msg));
+          }
           channel.ack(msg);
         });
 
